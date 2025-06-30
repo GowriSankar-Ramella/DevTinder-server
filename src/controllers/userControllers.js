@@ -1,16 +1,25 @@
-const { connection } = require("mongoose")
 const Connection = require("../models/Connection.model")
 const User = require("../models/User.model")
 
 const ApiResponse = require("../utils/ApiResponse")
 
-const requiredFields = "firstName lastName photoUrl age gender about skills"
+const requiredFields = "firstName lastName photoUrl age gender about skills location experience company github linkedin email"
 
 const receivedRequests = async (req, res) => {
     try {
         const loggedinUser = req.user
         const connectionRequests = await Connection.find({ receiverId: loggedinUser._id, status: "interested" }).populate("senderId", requiredFields)
         res.json(new ApiResponse(200, { data: connectionRequests }, "Connection Requests fetched successfully"))
+    } catch (error) {
+        res.status(400).send("Error : " + error.message)
+    }
+}
+
+const saved = async (req, res) => {
+    try {
+        const loggedinUser = req.user
+        const saved = await Connection.find({ senderId: loggedinUser._id, status: "saved" }).populate("receiverId", requiredFields)
+        res.json(new ApiResponse(200, { data: saved }, "Saved Connections fetched successfully!!"))
     } catch (error) {
         res.status(400).send("Error : " + error.message)
     }
@@ -54,4 +63,4 @@ const feed = async (req, res) => {
     }
 }
 
-module.exports = { receivedRequests, connections, feed }
+module.exports = { receivedRequests, connections, feed, saved }

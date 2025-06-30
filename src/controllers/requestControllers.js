@@ -7,7 +7,7 @@ const handleSendRequest = async (req, res) => {
         const senderId = req.user._id
         const receiverId = req.params.receiverId
         const status = req.params.status
-        const allowedStatus = ["interested", "ignored"]
+        const allowedStatus = ["interested", "ignored", "saved"]
         if (!allowedStatus.includes(status)) {
             throw new Error("Invalid request type")
         }
@@ -16,15 +16,24 @@ const handleSendRequest = async (req, res) => {
             throw new Error("User not found")
         }
         const duplicateRequest = await Connection.findOne({
-            $or: [{ senderId, receiverId }, { senderId: receiverId, receiverId: senderId }]
+            $or: [{ senderId, receiverId, status: "interested" }, { senderId, receiverId, status: "ignored" }, { senderId: receiverId, receiverId: senderId, status: "interested" }, { senderId: receiverId, receiverId: senderId, status: "ignored" }]
         })
         if (duplicateRequest) {
             throw new Error("Request already sent")
         }
 
-        const newConnection = new Connection({ senderId, receiverId, status })
-        await newConnection.save()
-        res.json(new ApiResponse(200, { newConnection }, "Connection request sent successfully!!"))
+        const savedRequest = await Connection.findOne({ senderId, receiverId, status: "saved" })
+
+        if (savedRequest) {
+            savedRequest.status = status
+            await savedRequest.save()
+            res.json(new ApiResponse(200, { savedRequest }, "Connection request sent successfully!!"))
+        }
+        else {
+            const newConnection = new Connection({ senderId, receiverId, status })
+            await newConnection.save()
+            res.json(new ApiResponse(200, { newConnection }, "Connection request sent successfully!!"))
+        }
     } catch (error) {
         res.status(400).send("Error : " + error.message)
     }

@@ -51,12 +51,31 @@ const userSchema = new mongoose.Schema({
     },
     photoUrl: {
         type: String,
-        default: "https://www.bing.com/images/search?view=detailV2&ccid=nMLvSM1x&id=2C20F05A62EA53F1F1532B056346DFE7FC8685A1&thid=OIP.nMLvSM1x4RxpyhMwkgDVxQHaE8&mediaurl=https%3a%2f%2fimg.freepik.com%2fpremium-photo%2fportrait-successful-programmer-game-developer-coder-guy-uses-computer-laptop-work-game-design-hacker-boy-generative-ai_117038-5477.jpg%3fw%3d900&exph=600&expw=900&q=random+cool+images+for+developers&simid=608000016811301380&FORM=IRPRST&ck=BECC40A891EA2E169567850D141E8CEB&selectedIndex=0&itb=0",
+        default: "https://th.bing.com/th/id/OIP.RKrPgszyZzEt38bVz8yeTQHaHa?w=166&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3",
         validate(value) {
             if (!validator.isURL(value)) {
                 throw new Error("Invalid photo url :", value)
             }
         }
+    },
+    company: {
+        type: String,
+        default: "N/A"
+    },
+    experience: {
+        type: String,
+        default: 0
+    },
+    location: {
+        type: String
+    },
+    github: {
+        type: String,
+        default: "N/A"
+    },
+    linkedin: {
+        type: String,
+        default: "N/A"
     }
 })
 

@@ -2,11 +2,11 @@ const User = require("../models/User.model")
 const jwt = require("jsonwebtoken")
 const authUser = async (req, res, next) => {
     try {
-        const { token } = req.cookies
-        if (!token) {
+        const { devTinderToken } = req.cookies
+        if (!devTinderToken) {
             throw new Error("Please login")
         }
-        const decodedToken = jwt.verify(token, "DevTinder")
+        const decodedToken = jwt.verify(devTinderToken, "DevTinder")
         const { _id } = decodedToken
         const user = await User.findById(_id)
         if (!user) {
