@@ -6,9 +6,9 @@ const ApiResponse = require("../utils/ApiResponse")
 const signup = async (req, res) => {
     try {
         await validateSignupData(req)
-        const { firstName, lastName, email, password, location } = req.body
+        const { firstName, lastName, email, password } = req.body
         const passwordHash = await bcrypt.hash(password, 10)
-        const user = new User({ firstName, lastName, email, password: passwordHash, location })
+        const user = new User({ firstName, lastName, email, password: passwordHash })
         const savedUser = await user.save()
         const token = await savedUser.getJWT()
         res.cookie("devTinderToken", token, { maxAge: 1 * 24 * 60 * 60 * 1000 }).json(new ApiResponse(200, { user: savedUser }, "SignedUp successfully!!"))

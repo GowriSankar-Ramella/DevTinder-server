@@ -6,7 +6,7 @@ const authUser = async (req, res, next) => {
         if (!devTinderToken) {
             throw new Error("Please login")
         }
-        const decodedToken = jwt.verify(devTinderToken, "DevTinder")
+        const decodedToken = jwt.verify(devTinderToken, process.env.JWT_SECRET)
         const { _id } = decodedToken
         const user = await User.findById(_id)
         if (!user) {
