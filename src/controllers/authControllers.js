@@ -2,6 +2,7 @@ const { validateSignupData } = require("../utils/validateData")
 const bcrypt = require("bcrypt")
 const User = require("../models/User.model")
 const ApiResponse = require("../utils/ApiResponse")
+const { run } = require("../utils/sendEmail")
 
 const signup = async (req, res) => {
     try {
@@ -11,6 +12,7 @@ const signup = async (req, res) => {
         const user = new User({ firstName, lastName, email, password: passwordHash })
         const savedUser = await user.save()
         const token = await savedUser.getJWT()
+        await run({ name: savedUser.firstName + savedUser.lastName, email: savedUser.email })
         res.cookie("devTinderToken", token, { maxAge: 1 * 24 * 60 * 60 * 1000 }).json(new ApiResponse(200, { user: savedUser }, "SignedUp successfully!!"))
     } catch (error) {
         res.status(400).send("Error occured :" + error.message)
