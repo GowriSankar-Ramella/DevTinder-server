@@ -19,7 +19,7 @@ const validateSignupData = async (req) => {
 }
 
 const validateUpdateProfileData = (req) => {
-    const allowedFields = ["firstName", "lastName", "skills", "about", "photoUrl", "age", "location", "company", "experience", "github", "linkedin"]
+    const allowedFields = ["firstName", "lastName", "skills", "about", "photoUrl", "age", "location", "company", "experience", "github", "linkedin", "gender"]
 
     const isAllowed = Object.keys(req.body).every((field) => allowedFields.includes(field))
 

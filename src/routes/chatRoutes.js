@@ -20,6 +20,22 @@ chatRouter.get("/all", authUser, async (req, res) => {
     }
 })
 
+chatRouter.get("/initialize/:targetUserId", authUser, async (req, res) => {
+    try {
+        const { targetUserId } = req.params
+        const user = req.user
+        let chat = await Chat.findOne({ participants: { $all: [user._id, targetUserId] } })
+        if (!chat) {
+            chat = new Chat({ participants: [user._id, targetUserId], messages: [] })
+        }
+        chat.messages.push({ senderId: user._id, text: "Hi❤️" })
+        await chat.save()
+        res.json(new ApiResponse(200, { chat }, "Hi sent Successfully"))
+    } catch (error) {
+        res.status(400).send("Error: " + error.message)
+    }
+})
+
 chatRouter.get("/:targetUserId", authUser, async (req, res) => {
     const user = req.user
     const { targetUserId } = req.params
